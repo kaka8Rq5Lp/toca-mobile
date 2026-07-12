@@ -11,18 +11,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential git python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev automake zip unzip openjdk-17-jdk
-      - run: |
-          pip install --upgrade pip
-          pip install buildozer cython==0.29.33
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential git python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev automake zip unzip openjdk-17-jdk
+      - name: Install Buildozer
+        run: pip install --upgrade pip && pip install buildozer cython==0.29.33
       - name: Build APK
-        working-directory: ./mobile
         run: buildozer android debug 2>&1 | tail -100
         timeout-minutes: 120
-      - uses: actions/upload-artifact@v4
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
         with:
           name: toca-mobile-apk
-          path: mobile/bin/*.apk
+          path: bin/*.apk
           if-no-files-found: warn
