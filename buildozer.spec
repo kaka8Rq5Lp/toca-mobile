@@ -31,9 +31,6 @@ android.release_artifact = apk
 android.allow_backup = True
 android.private_storage = True
 
-fullscreen = 0
-orientation = portrait
-
 log_level = 2
 
 android.enable_androidx = True
