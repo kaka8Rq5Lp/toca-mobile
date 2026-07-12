@@ -16,9 +16,20 @@ jobs:
       - name: Install Buildozer
         run: pip install --upgrade pip && pip install buildozer cython==0.29.33
       - name: Build APK
-        run: buildozer android debug 2>&1 | tail -100
+        run: |
+          buildozer -v android debug 2>&1 | tee build.log
+          echo "Buildozer exit code: ${PIPESTATUS[0]}"
+          exit ${PIPESTATUS[0]}
         timeout-minutes: 120
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: warn
       - name: Upload APK artifact
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: toca-mobile-apk
